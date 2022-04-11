@@ -34,5 +34,6 @@ build-job:
   script:
     - echo $TEST_GLOBAL_VAR
     - echo $TEST_LOCAL_VAR
-    - echo $CI_COMMIT_BRANCH
+    - export BRANCHNAME=$(git branch --show-current)
+    - echo $BRANCHNAME
 
