@@ -1,0 +1,37 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  CI_IMAGE:                        "paritytech/tools:latest"
+  TEST_GLOBAL_VAR:                 "lalala"
+
+default:
+  image:                           $CI_IMAGE
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - unknown_failure
+      - api_failure
+  interruptible:                   true
+  tags:
+    - testlab-runner-1
+
+.test-refs:                        &test-refs
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_REF_NAME == "master"
+    - if: $CI_COMMIT_REF_NAME =~ /^[0-9]+$/                         # PRs
+
+build-job:
+  stage:                           build
+  <<:                              *test-refs
+  variables:
+    TEST_LOCAL_VAR:                "ololo"
+  script:
+    - echo $TEST_GLOBAL_VAR
+    - echo $TEST_LOCAL_VAR
+
