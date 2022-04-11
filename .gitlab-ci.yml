@@ -17,7 +17,7 @@ default:
       - api_failure
   interruptible:                   true
   tags:
-    - testlab-runner-1
+    - testlab-docker
 
 .test-refs:                        &test-refs
   rules:
