@@ -36,4 +36,5 @@ build-job:
     - echo $TEST_LOCAL_VAR
     - export BRANCHNAME=$(git branch --show-current)
     - echo $BRANCHNAME
+    - git status
 
