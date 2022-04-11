@@ -58,7 +58,7 @@ bench-build:
     - echo $TEST_LOCAL_VAR
     - export PRNUM=$CI_COMMIT_BRANCH
     - export BRANCHNAME=$(curl -s https://api.github.com/repos/tripleightech/alvicsam-playground/pulls/$PRNUM | jq '.head.ref')
-    - echo $BRANCHNAME
+    - echo $PRNUM
 
 bench:
   stage:                           deploy
