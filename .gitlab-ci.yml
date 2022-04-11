@@ -54,11 +54,7 @@ bench-build:
   variables:
     TEST_LOCAL_VAR:                "ololo"
   script:
-    - echo $TEST_GLOBAL_VAR
-    - echo $TEST_LOCAL_VAR
-    - export PRNUM=$CI_COMMIT_BRANCH
-    - export BRANCHNAME=$(curl -s https://api.github.com/repos/tripleightech/alvicsam-playground/pulls/$PRNUM | jq '.head.ref')
-    - echo $PRNUM
+    - echo "doing sth"
 
 bench:
   stage:                           deploy
@@ -66,8 +62,22 @@ bench:
   variables:
     TEST_LOCAL_VAR:                "ololo"
   script:
-    - echo $TEST_GLOBAL_VAR
-    - echo $TEST_LOCAL_VAR
-    - export PRNUM=$CI_COMMIT_BRANCH
-    - export BRANCHNAME=$(curl -s https://api.github.com/repos/tripleightech/alvicsam-playground/pulls/$PRNUM | jq '.head.ref')
-    - echo $BRANCHNAME
+    - echo $CI_COMMIT_SHORT_SHA >> somefile.txt
+    - export BRANCHNAME="${CI_COMMIT_BRANCH}-weights"
+    # Set git config
+    - rm -rf .git/config
+    - git config --global user.email "${GITHUB_EMAIL}"
+    - git config --global user.name "${GITHUB_USER}"
+    - git config remote.origin.url "https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com:/tripleightech/${CI_PROJECT_NAME}.git"
+    - git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    # push results to github
+    - git checkout -b $BRANCHNAME
+    - git add somefile.txt
+    - git commit -m "[benchmarks] pr with wieghts"
+    - git push origin $BRANCHNAME
+    # create PR
+    - curl -u ${GITHUB_USER}:${GITHUB_TOKEN}
+      -d '{"title":"[benchmarks] Update weights","body":"This PR is generated automatically by CI.","head":"'$BRANCHNAME'","base":"'${CI_COMMIT_BRANCH}'"}'
+      -X POST https://api.github.com/repos/tripleightech/${CI_PROJECT_NAME}/pulls
+  after_script:
+    - rm -rf .git/config
