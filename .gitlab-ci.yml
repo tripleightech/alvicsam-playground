@@ -34,6 +34,8 @@ cargo-fmt:
   script:
     - cargo fmt
     - git diff
+    # xargs trimms whitespaces
+    - if [[ `git diff | wc -l | xargs` == 0  ]]; then echo "ok"; else echo "changes"; fi
 
 build-job:
   stage:                           build
