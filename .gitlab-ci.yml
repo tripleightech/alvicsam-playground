@@ -41,6 +41,8 @@ cargo-fmt:
         echo "changes";
         git config --global user.email "jd@example.com";
         git config --global user.name "John Doe";
+        git status;
+        git add *;
         git commit --amend -m "[ci] apply cargo fmt";
         git status;
       fi
