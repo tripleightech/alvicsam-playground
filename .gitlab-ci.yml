@@ -1,10 +1,11 @@
 stages:
+  - fmt
   - build
   - test
   - deploy
 
 variables:
-  CI_IMAGE:                        "paritytech/tools:latest"
+  CI_IMAGE:                        "paritytech/ci-linux:production"
   TEST_GLOBAL_VAR:                 "lalala"
 
 default:
@@ -27,15 +28,16 @@ default:
     - if: $CI_COMMIT_REF_NAME =~ /^[0-9]+$/                         # PRs
     - if: $CI_COMMIT_REF_NAME =~ /^some-release-v[0-9]+\.[0-9]+.*$/              # i.e. some-release-v1.0, some-release-v2.1rc1
 
+cargo-fmt:
+  stage:                           fmt
+  <<:                              *test-refs
+  script:
+    - cargo fmt
+    - git diff
+
 build-job:
   stage:                           build
   <<:                              *test-refs
-  variables:
-    TEST_LOCAL_VAR:                "ololo"
   script:
-    - echo $TEST_GLOBAL_VAR
-    - echo $TEST_LOCAL_VAR
-    - export PRNUM=$CI_COMMIT_BRANCH
-    - export BRANCHNAME=$(curl -s https://api.github.com/repos/tripleightech/alvicsam-playground/pulls/$PRNUM | jq '.head.ref')
-    - echo $BRANCHNAME
+    - cargo build
 
