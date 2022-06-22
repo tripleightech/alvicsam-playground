@@ -39,8 +39,8 @@ cargo-fmt:
         echo "ok";
       else
         echo "changes";
-        git config --global user.email "jd@example.com"
-        git config --global user.name "John Doe"
+        git config --global user.email "jd@example.com";
+        git config --global user.name "John Doe";
         git commit --amend;
         git status;
       fi
