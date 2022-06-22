@@ -39,7 +39,7 @@ cargo-fmt:
         echo "ok";
       else
         echo "changes";
-        git commit --ammend;
+        git commit --amend;
         git status;
       fi
 
